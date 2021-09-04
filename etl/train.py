@@ -1,11 +1,13 @@
 import os, joblib, numpy as np
 from datetime import datetime
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import f1_score
+
+# Scores
+from sklearn.metrics import recall_score
 
 twelve_leads = ('I', 'II', 'III', 'aVR', 'aVL', 'aVF', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6')
 six_leads = ('I', 'II', 'III', 'aVR', 'aVL', 'aVF')
@@ -16,7 +18,7 @@ lead_sets = (twelve_leads, six_leads, four_leads, three_leads, two_leads)
 lead_sets_names = ('twelve_leads', 'six_leads', 'four_leads', 'three_leads', 'two_leads')
 
 
-class ModelTrainer():
+class ModelTrainer:
     """
     Base class to train the models.
 
@@ -63,7 +65,8 @@ class ModelTrainer():
             ('preprocessor', ColumnTransformer(
                 transformers=[
                     ('num', self.numeric_transformer, self.leads + ['Age']),
-                    ('cat', self.categorical_transformer, ['Sex'])])),
+                    ('cat', self.categorical_transformer, ['Sex']),
+                ])),
             ('classifier', self._classifier)])
 
     def get_hyperps(self):
@@ -72,36 +75,41 @@ class ModelTrainer():
     def show_leads(self):
         print(self.leads)
 
-    def set_grid(self, grid = None):
+    def set_grid(self, grid=None):
         if type(grid) is dict:
             self._grid = grid
+            print('Custom hyperparameter grid was set.')
         else:
             print('Attention: No hyperparameter grid was set. Training will use the default values.')
 
-    def train(self, data_train, labels_train):
+    def train(self, data_train, labels_train, n_jobs: int = None):
         self._labs = labels_train.columns
         self.models = list()
         for lab in self._labs:
-            self._model = GridSearchCV(self.pipe,
-                                       self._grid,
-                                       scoring='f1',
-                                       cv=None,  # None = 5-fold CV
-                                       n_jobs=1, verbose=0)
+            print('   Training for label ' + lab + '\n')
+            self._model = RandomizedSearchCV(self.pipe,
+                                             self._grid,
+                                             scoring='recall',
+                                             cv=None,  # None = 5-fold CV
+                                             n_jobs=n_jobs, verbose=0)
             fitted = self._model.fit(data_train[self.leads + ['Age', 'Sex']], labels_train[lab])
             self.models.append(fitted)
+        print('Training done.')
 
     def best_hyperps(self):
         for i in range(0, len(self.models)):
             print('Model for label ' + self._labs[i])
             print(self.models[i].best_params_)
 
-    def save_models(self, folder='models'):
+    def save_models(self, folder='models', include_date=True):
         self._directory = os.getcwd() + '\\' + folder
         if not os.path.isdir(self._directory):
             os.mkdir(self._directory)
         for lab, model in zip(self._labs, self.models):
             self.models_dict[lab] = model
-        dt = datetime.now().strftime("%Y%m%d_%H%M%S")
+        dt = ''
+        if include_date:
+            dt = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = self._directory + '\\' + dt + '_' + self.lead_set + '_' + self._classifier_name + '.pkl'
         joblib.dump(self.models_dict, filename)
         print('Models saved on ' + self._directory)
