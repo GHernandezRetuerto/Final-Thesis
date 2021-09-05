@@ -71,7 +71,7 @@ class EvalModel:
     def plot_prec_rec(self):
         for lab in self.models_dict.keys():
             prob = self.pred_dict[lab][1]
-            skp.plot_precision_recall(self._labels_test[lab], prob)
+            skp.plot_precision_recall(self._labels_test[lab], prob, plot_micro=False)
             plt.title(lab)
             plt.show()
 
