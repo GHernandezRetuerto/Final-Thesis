@@ -5,6 +5,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
 
 # Scores
 from sklearn.metrics import recall_score
@@ -67,6 +68,7 @@ class ModelTrainer:
                     ('num', self.numeric_transformer, self.leads + ['Age']),
                     ('cat', self.categorical_transformer, ['Sex']),
                 ])),
+            ('pca', PCA(n_components=None))
             ('classifier', self._classifier)])
 
     def get_hyperps(self):
