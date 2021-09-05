@@ -15,25 +15,27 @@ data_path = r'C:\Users\ghdez\Mi unidad\MASTER UC3M\TFM\Repo\data\datasets\WFDB_C
 label_path = r'C:\Users\ghdez\Mi unidad\MASTER UC3M\TFM\Repo\data\datasets\WFDB_CPSC2018_labels.csv'
 
 load = LoadData()
+# load.load_data('data\\WFDB_ChapmanShaoxing', 'data\\datasets')
 data, labels = load.get_csv(data_path, label_path)
+
 data_train, data_test, labels_train, labels_test = load.split_train_test()
 
 models_dict = {
     'LR': LogisticRegression(),
-    # 'kNN': KNeighborsClassifier(),
-    # # 'SVM': SVC(),
-    # 'NB': BernoulliNB(),
-    # 'RF': RandomForestClassifier(),
-    # 'XGB': XGBClassifier(use_label_encoder=False, verbosity=0)
+    'kNN': KNeighborsClassifier(),
+    # 'SVM': SVC(),
+    'NB': BernoulliNB(),
+    'RF': RandomForestClassifier(),
+    'XGB': XGBClassifier(use_label_encoder=False, verbosity=0)
 }
 # Imported from etl/assets/grids.py
 grids_dict = {
     'LR': grid_lr,
-    # 'kNN': grid_knn,
-    # # 'SVM': grid_svm,
-    # 'NB': grid_nb,
-    # 'RF': grid_rf,
-    # 'XGB': grid_xgb
+    'kNN': grid_knn,
+    # 'SVM': grid_svm,
+    'NB': grid_nb,
+    'RF': grid_rf,
+    'XGB': grid_xgb
 }
 
 for key in models_dict.keys():
@@ -42,4 +44,4 @@ for key in models_dict.keys():
     current_model = ModelTrainer(classifier=models_dict[key], classifier_name=key, lead_set=lead_set)
     current_model.set_grid(grids_dict[key])
     current_model.train(data_train, labels_train)
-    current_model.save_models('models\\twelve_leads\\prueba' + '\n\n', include_date=False)
+    current_model.save_models('models\\two_leads\\prueba' + '\n\n', include_date=False)

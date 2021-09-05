@@ -82,7 +82,7 @@ class ModelTrainer:
         else:
             print('Attention: No hyperparameter grid was set. Training will use the default values.')
 
-    def train(self, data_train, labels_train, n_jobs: int = None):
+    def train(self, data_train, labels_train, n_jobs: int = None, n_iter: int = 10):
         self._labs = labels_train.columns
         self.models = list()
         for lab in self._labs:
@@ -91,7 +91,9 @@ class ModelTrainer:
                                              self._grid,
                                              scoring='recall',
                                              cv=None,  # None = 5-fold CV
-                                             n_jobs=n_jobs, verbose=0)
+                                             n_jobs=n_jobs,
+                                             verbose=0,
+                                             n_iter=n_iter)
             fitted = self._model.fit(data_train[self.leads + ['Age', 'Sex']], labels_train[lab])
             self.models.append(fitted)
         print('Training done.')

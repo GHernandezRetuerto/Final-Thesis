@@ -31,7 +31,7 @@ class LoadData:
             raise NameError('No data was provided.')
 
         # Create a folder for the dataset if it does not already exist.
-        if not os.path.isdir():
+        if not os.path.isdir(dataset_path):
             os.mkdir()
 
         # Extract the classes from the dataset.
