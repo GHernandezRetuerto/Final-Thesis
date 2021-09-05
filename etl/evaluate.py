@@ -17,6 +17,11 @@ class EvalModel:
             pred_prob = [prediction, probability]
             self.pred_dict[lab] = pred_prob
 
+    def best_hyperps(self):
+        for i in range(0, len(self.models_dict)):
+            print('Model for label ' + self._labs[i])
+            print(self.models_dict[i].best_params_)
+
     def get_labels(self):
         return self.pred_dict.keys()
 
@@ -37,7 +42,7 @@ class EvalModel:
     def plot_roc(self):
         for lab in self.models_dict.keys():
             prob = self.pred_dict[lab][1]
-            skp.plot_roc(self._labels_test[lab], prob)
+            skp.plot_roc(self._labels_test[lab], prob, plot_micro=False)
             plt.title(lab)
             plt.show()
 
@@ -58,7 +63,9 @@ class EvalModel:
     def plot_confusion(self):
         for lab in self.models_dict.keys():
             pred = self.pred_dict[lab][0]
+            plt.figure(figsize=(10, 10))
             skp.plot_confusion_matrix(self._labels_test[lab], pred)
+            plt.title(lab)
             plt.show()
 
     def plot_prec_rec(self):
