@@ -1,8 +1,7 @@
 /.ipynb_checkpoints
 /data
-/models
+/models/*
 /venv
-/1_exploratory_analysis.ipynb
 
 # JetBrains IDE
 .idea/

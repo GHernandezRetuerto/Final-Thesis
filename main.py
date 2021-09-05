@@ -16,24 +16,25 @@ label_path = r'C:\Users\ghdez\Mi unidad\MASTER UC3M\TFM\Repo\data\datasets\WFDB_
 
 load = LoadData()
 data, labels = load.get_csv(data_path, label_path)
+
 data_train, data_test, labels_train, labels_test = load.split_train_test()
 
 models_dict = {
     'LR': LogisticRegression(),
-    # 'kNN': KNeighborsClassifier(),
-    # # 'SVM': SVC(),
-    # 'NB': BernoulliNB(),
-    # 'RF': RandomForestClassifier(),
-    # 'XGB': XGBClassifier(use_label_encoder=False, verbosity=0)
+    'kNN': KNeighborsClassifier(),
+    # 'SVM': SVC(),
+    'NB': BernoulliNB(),
+    'RF': RandomForestClassifier(),
+    'XGB': XGBClassifier(use_label_encoder=False, verbosity=0)
 }
 # Imported from etl/assets/grids.py
 grids_dict = {
     'LR': grid_lr,
-    # 'kNN': grid_knn,
-    # # 'SVM': grid_svm,
-    # 'NB': grid_nb,
-    # 'RF': grid_rf,
-    # 'XGB': grid_xgb
+    'kNN': grid_knn,
+    # 'SVM': grid_svm,
+    'NB': grid_nb,
+    'RF': grid_rf,
+    'XGB': grid_xgb
 }
 
 for key in models_dict.keys():
