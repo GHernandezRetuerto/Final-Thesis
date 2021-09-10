@@ -1,9 +1,6 @@
 import os
 import numpy as np
-import pandas as pd
 import joblib
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
 
 
 # Check if a variable is a number or represents a number.
