@@ -1,5 +1,9 @@
 import numpy as np
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import BernoulliNB
+from xgboost import XGBClassifier
 
 grid_lr = {
     'classifier__penalty': ['l1', 'l2'],
@@ -38,5 +42,24 @@ grid_xgb = {
     'classifier__n_estimators': np.round(np.logspace(0, 3, 10)).astype(int),
     'classifier__depth': np.round(np.logspace(0, 3, 10)).astype(int),
     'classifier__learning_rate': [0.0001, 0.001, 0.01, 0.1, 0.2, 0.3]
+}
+
+models_dict = {
+    'LR': LogisticRegression(),
+    'kNN': KNeighborsClassifier(),
+    # 'SVM': SVC(),
+    'NB': BernoulliNB(),
+    'RF': RandomForestClassifier(),
+    'XGB': XGBClassifier(use_label_encoder=False, verbosity=0)
+}
+
+# Imported from etl/assets/grids.py
+grids_dict = {
+    'LR': grid_lr,
+    'kNN': grid_knn,
+    # 'SVM': grid_svm,
+    'NB': grid_nb,
+    'RF': grid_rf,
+    'XGB': grid_xgb
 }
 
