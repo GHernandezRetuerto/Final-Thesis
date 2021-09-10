@@ -36,7 +36,7 @@ class ModelTrainer:
     negatives.
     """
 
-    def __init__(self, classifier, classifier_name: str, lead_set: str = 'twelve_leads'):
+    def __init__(self, classifier, classifier_name: str, lead_set: str = 'twelve_leads', pca_n_components=None):
 
         self.numeric_transformer = Pipeline([
             ('imputer', SimpleImputer(strategy='median')),
@@ -49,6 +49,8 @@ class ModelTrainer:
         )
 
         self.models_dict = {}
+
+        self.pca_n_components = pca_n_components
 
         self._classifier = classifier
         self._classifier_name = classifier_name
@@ -68,7 +70,7 @@ class ModelTrainer:
                     ('num', self.numeric_transformer, self.leads + ['Age']),
                     ('cat', self.categorical_transformer, ['Sex']),
                 ])),
-            ('pca', PCA(n_components=None))
+            ('pca', PCA(n_components=self.pca_n_components)),
             ('classifier', self._classifier)])
 
     def get_hyperps(self):
